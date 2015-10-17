@@ -1,0 +1,37 @@
+user nginx;
+worker_processes 1;
+
+error_log   /var/log/nginx/error.log warn;
+pid         /var/run/nginx.pid;
+
+events {
+  worker_connections 1024;
+}
+
+http {
+  include       /etc/nginx/mime.types;
+  default_type  application/octet-stream;
+
+
+  sendfile        on;
+  keepalive_timeout  65;
+
+  # nginxとUnicornの連携設定
+  upstream unicorn {
+    server unix:/tmp/unicorn.sock;
+  }
+
+  server {
+    listen      80 default_server;
+    server_name _;
+
+    location ~ ^/assets/ {
+      root /vps_app/current/public;
+    }
+
+    # unicornサーバへのリダイレクト設定
+    location / {
+      proxy_pass http://unicorn;
+    }
+  }
+}
