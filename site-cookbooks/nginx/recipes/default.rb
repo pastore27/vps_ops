@@ -1,3 +1,4 @@
+# coding: utf-8
 #
 # Cookbook Name:: nginx
 # Recipe:: default
@@ -7,7 +8,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
-include_recipe "yum-epel"
+include_recipe "yum"
 
 package "nginx" do
   action :install
